@@ -21,6 +21,11 @@ function myFunctionActivador(e) {
             hoja.getRange("B2").setValue(grado);
             hoja.getRange("B3").setValue(sede);
 
+            hoja.getRange("F2").setValue("En proceso");
+            hoja.getRange("F2").setBackground("#3CB371");
+
+            let periodo = hoja.getRange("B4").getValue();
+
             //limpiar hoja
             limpiarContenido(codigo.toString(), 'B6:H35'); // Borra el contenido del rango
 
@@ -35,12 +40,18 @@ function myFunctionActivador(e) {
             //traer registros de faltas
             let listaRegistros = getDatosFaltas();
 
-            fillHoja(listaFiltradaEstudiantes, listaRegistros, hoja);
+            fillHoja(listaFiltradaEstudiantes, listaRegistros, hoja, periodo);
+
+            var fechaActual = new Date(); // Obtener la fecha actual
+            //var fechaFormateada = Utilities.formatDate(fechaActual, Session.getScriptTimeZone(), "dd/MM/yyyy"); // Formato: día/mes/año
+  
+
+            hoja.getRange("F2").setValue(fechaActual);
+            hoja.getRange("E2").setValue(false);
+            hoja.getRange("F2").setBackground("#FFFFFF");
 
         }
     };
-
-
 
 }
 

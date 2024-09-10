@@ -73,23 +73,61 @@ function getDatosFaltas() {
     return listaCompleta;
 }
 
-function fillHoja(dataEstudiantes, dataFaltas, hoja) {
+function fillHoja(dataEstudiantes, dataFaltas, hoja, periodo) {
 
     
     let datos = [];
+    let documento;
 
     dataEstudiantes.forEach(element => {
 
-        let prueba = 5+3;
-        datos.push([element[1], element[6], prueba])
+        //Filtrar los egistros de las faltas por estudiante
+        documento = element[1];
+        var { total, inasistencias, justificadas,  retardos, uniforme} = getRegistrosByEstudiante(dataFaltas, documento, periodo);
+        datos.push([element[1], element[6], total, inasistencias, justificadas,  retardos, uniforme])
     });
 
-    const rango = hoja.getRange('B' + 6 + ':D' + (datos.length + 5));
+    const rango = hoja.getRange('B' + 6 + ':H' + (datos.length + 5));
 
     rango.setValues(datos);
-
-
-
     
+}
+
+function getRegistrosByEstudiante(dataFaltas, documento, periodo) {
+
+    let inasistencias = 0;
+    let justificadas = 0;
+    let retardos = 0;
+    let uniforme = 0;
+    let total = 0;
+
+    dataFaltas.forEach(element => {
+
+        if(element[4] == documento && element[3] == periodo && element[9] == "Inasistencia"){
+            inasistencias++;
+        }       
+        else if(element[4] == documento && element[3] == periodo && element[9] == "No portar adecuadamente el uniforme"){
+            uniforme++;
+        }
+        else if(element[4] == documento && element[3] == periodo && element[9] == "No llegar puntual a la Institución"){
+            retardos++;
+        }
+        
+        if(element[4] == documento && element[3] == periodo && element[9] == "Inasistencia" && element[18] == true){
+            justificadas++;
+        }
+
+
+        
+    });
+
+    total = inasistencias + retardos + uniforme
+    return {
+        total: total,
+        inasistencias: inasistencias,
+        justificadas: justificadas,
+        retardos: retardos,
+        uniforme: uniforme
+    };
 }
 
